@@ -57,6 +57,12 @@ void GPIO_KEYLED_Init(void)
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;	
+	GPIO_Init(GPIOC, &GPIO_InitStructure);  /*初始化GPIOC端口PC0推挽输出，50MHz*/
+	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	
 	GPIO_Init(GPIOA, &GPIO_InitStructure);  /*初始化GPIOA端口PA0=KEY4上拉输入，50MHz*/
 	/*---------初始化状态四个LED全灭OFF------------*/
@@ -64,29 +70,48 @@ void GPIO_KEYLED_Init(void)
 }
 
 #define n 200
+u8 KEY=0;
+void Beep(void)
+{
+	GPIO_SetBits(GPIOC,GPIO_Pin_0);
+	Delayms(n);
+	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+}
+
 int main(void)
 {
-u8 KEY=0;	
+//u8 KEY=0;	
 u8 i=0;
 u16 Pinx[4]={GPIO_Pin_2,GPIO_Pin_3,GPIO_Pin_4,GPIO_Pin_7};
 	SystemInit();     		/* 系统初始化 */
 	GPIO_KEYLED_Init();		/* GPIO初始化	*/
 	while (1)
 	{	
-	if (GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)==0) 			 KEY=1;
-	else {if (GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_12)==0) KEY=2;
-	else {if (GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13)==0) KEY=3;
-	if (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==0)  			 KEY=4;}}
-		if(KEY==0){GPIO_ResetBits(GPIOD,Pinx[i]);	/*  LEDi+1亮 		*/
+	//if (GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)==0) 			 KEY=1;
+	if ((GPIOD->IDR&(1<<11))==0) 			 KEY=1;
+	//else {if (GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_12)==0) KEY=2;
+	else {if ((GPIOD->IDR&(1<<12))==0) KEY=2;
+	//else {if (GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13)==0) KEY=3;
+	else {if ((GPIOC->IDR&(1<<13))==0) KEY=3;
+	//if (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==0)  			 KEY=4;}}
+	if ((GPIOA->IDR&1)==0)  			 KEY=4;}}
+		  //if(KEY==0){GPIO_ResetBits(GPIOD,Pinx[i]);	/*  LEDi+1亮 		*/	
+			if(KEY==0){GPIOD->ODR&=~Pinx[i];
 					Delayms(n);													/*  延时n ms  	*/
-					GPIO_SetBits(GPIOD,Pinx[i]);	 			/*  LEDi+1灭  	*/
+					//GPIO_SetBits(GPIOD,Pinx[i]);	 			/*  LEDi+1灭  	*/
+					GPIOD->ODR|=Pinx[i];
 					Delayms(n);
 				  i++;
 					if (i>=4) i=0;	}
-			else {GPIO_ResetBits(GPIOD,Pinx[KEY-1]);/*  LED[KEY-1]亮  */
+			//else {GPIO_ResetBits(GPIOD,Pinx[KEY-1]);/*  LED[KEY-1]亮  */
+			else {GPIOD->ODR&=~Pinx[KEY-1];
+					Beep();
 					Delayms(n);													/*  延时n ms      */
-					GPIO_SetBits(GPIOD,Pinx[KEY-1]);		/*  LED[KEY-1]灭  */
-					Delayms(n);		}
+					//GPIO_SetBits(GPIOD,Pinx[KEY-1]);		/*  LED[KEY-1]灭  */
+				  GPIOD->ODR|=Pinx[KEY-1];
+					Delayms(n);		
+					KEY=0;
+			}
 	}
 }
 										  

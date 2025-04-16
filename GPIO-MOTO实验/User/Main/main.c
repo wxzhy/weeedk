@@ -13,8 +13,10 @@
 #define KEY1	GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)
 #define KEY2	GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_12)
 #define KEY3	GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13)
-#define IA(x)   	((x) ? (GPIO_SetBits(GPIOB, GPIO_Pin_8)) : (GPIO_ResetBits(GPIOB, GPIO_Pin_8)))
-#define IB(x)   	((x) ? (GPIO_SetBits(GPIOB, GPIO_Pin_9)) : (GPIO_ResetBits(GPIOB, GPIO_Pin_9)))
+//#define IA(x)   	((x) ? (GPIO_SetBits(GPIOB, GPIO_Pin_8)) : (GPIO_ResetBits(GPIOB, GPIO_Pin_8)))
+//#define IB(x)   	((x) ? (GPIO_SetBits(GPIOB, GPIO_Pin_9)) : (GPIO_ResetBits(GPIOB, GPIO_Pin_9)))
+#define IA(x)   	((x) ? (GPIO_SetBits(GPIOE, GPIO_Pin_14)) : (GPIO_ResetBits(GPIOE, GPIO_Pin_14)))
+#define IB(x)   	((x) ? (GPIO_SetBits(GPIOE, GPIO_Pin_15)) : (GPIO_ResetBits(GPIOE, GPIO_Pin_15)))
 #define LEDR(x)   ((x) ? (GPIO_SetBits(GPIOB, GPIO_Pin_1)) : (GPIO_ResetBits(GPIOB, GPIO_Pin_1)))
 #define LEDG(x)   ((x) ? (GPIO_SetBits(GPIOB, GPIO_Pin_2)) : (GPIO_ResetBits(GPIOB, GPIO_Pin_2)))
 /*********************************************
@@ -45,7 +47,7 @@ void GPIO_MOTO_Init(void)
 {
 
 	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD, ENABLE);	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD|RCC_APB2Periph_GPIOE, ENABLE);	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11|GPIO_Pin_12;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	
@@ -61,10 +63,16 @@ void GPIO_MOTO_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;	
 	GPIO_Init(GPIOD, &GPIO_InitStructure);  /*初始化GPIOD端口PD2、3、4、7 10MHz推挽输出*/
 	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_8|GPIO_Pin_9;
+	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_8|GPIO_Pin_9;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;	
 	GPIO_Init(GPIOB, &GPIO_InitStructure);  /*初始化GPIOB端口PB1=RED,PB2=GREEN,PB8=IA,PB9=IB 10MHz推挽输出*/
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14|GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;	
+	GPIO_Init(GPIOE, &GPIO_InitStructure);  /*初始化GPIOE端口PB1=RED,PB2=GREEN,PE14=IA,PE15=IB 50MHz推挽输出*/
 	
 	/*---------初始化状态指示灯灭OFF------------*/
 	IA(0);IB(0);					/*  电机停止  */
