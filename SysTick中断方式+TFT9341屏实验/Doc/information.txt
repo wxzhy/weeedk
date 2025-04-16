@@ -1,0 +1,17 @@
+1.本实验硬件平台：NUAA_CM3_107实验开发板WEEEDK，MCU：STM32F107VCT6
+               
+2.开发和实验环境：MDK-ARM Keil V5.15及其以上版本
+3.例程使用的STM32F10x固件库V3.5.0
+4.本实验例程现象说明内容：
+  硬件连接：UART1：PA9（TXD1），PA10（RXD1）
+  UART2：PD5（TXD2），PD6（RXD2） ，
+（1）需要短接JP23和JP24连接到U1TXD和U1RXD，短接JP25和JP26连接到U2TXD和U2RXD
+（2）插上3.2吋TFT真彩屏到JLCD1（可选），打开电源，两个电源指示灯指示灯亮
+（2）下载示例程序后运行，显示屏显示初始信息
+（3）打开串口助手，设置好对应的串口和波特率。在发送端输入数据看接收端显示情况
+     	 输入数字1发送，点亮LED1指示灯，接收端显示Turn on LED1
+		 输入数字2发送，同时点亮LED2指示灯，接收端显示Turn on LED2
+		 输入数字3发送，同时点亮LED3指示灯，接收端显示Turn on LED3
+		 输入数字5发送，同时点亮LED1~LED3指示全灯，接收端显示Turn on all LED
+		 输入数字0或6发送LED1~LED3指示全灭，接收端显示Turn off all LED
+
