@@ -23,9 +23,10 @@ void Init_TIMER(void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);  //使能定时器4，重要！！
 	TIM_DeInit(TIM4);                              				//将IM2定时器初始化位复位值
 	TIM_InternalClockConfig(TIM4); 												//配置 TIM4 内部时	   
-	TIM_BaseInitStructure.TIM_Period = 7200-1; 						//设置自动重载寄存器值为最大值	0~65535之间  7200/72000000=1/10000s=0.1ms即10KHz													
+	//TIM_BaseInitStructure.TIM_Period = 7200-1; 						//设置自动重载寄存器值为最大值	0~65535之间  7200/72000000=1/10000s=0.1ms即10KHz													
 															//TIM_Period（TIM1_ARR）=7200，计数器向上计数到7200后产生更新事件，
 															//计数值归零 也就是 1ms产生更新事件一次
+	TIM_BaseInitStructure.TIM_Period = 720-1; 						//设置自动重载寄存器值为最大值	0~65535之间  7200/7200000=1/1000s=1ms即1KHz								
 	TIM_BaseInitStructure.TIM_Prescaler = 0;  				//自定义预分频系数为0，即定时器的时钟频率为72M提供给定时器的时钟	0~65535之间
 															//设置预分频器分频系数0
 	TIM_BaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //时钟分割为0

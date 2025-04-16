@@ -27,6 +27,7 @@ int main(void)
 	LCD_Init();												/*  LCD初始化        */
 	Welcome(); 										 		/*  显示主界面       */
 	LED1(1);LED2(1);LED3(1);LED4(1);
+	name_display();
 	while(1)
 	{		
 		/*  本例程，主循环体不做事情，全部在中断函数中让LED闪烁，可根据需要自行加功能代码*/

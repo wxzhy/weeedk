@@ -138,14 +138,44 @@ void SysTick_Handler(void)
 }
 u8 TP1=0,TP2=0,TP3=0;
 
+void LCD1(u8 i)
+{
+	if(i)
+		Gui_StrCenter(0,130,WHITE,BLACK,"TIM1 更新定时 1000ms",16,0);//居中显示	
+	else
+		Gui_StrCenter(0,130,WHITE,BLACK,"TIM1 更新定时     ms",16,0);//居中显示	
+}
+
+void LCD2(u8 i)
+{
+	if(i)
+		Gui_StrCenter(0,150,WHITE,BLACK,"TIM2 更新定时  500ms",16,0);//居中显示	
+	else
+		Gui_StrCenter(0,150,WHITE,BLACK,"TIM2 更新定时     ms",16,0);//居中显示	
+}
+
+void LCD3(u8 i)
+{
+	if(i)
+		Gui_StrCenter(0,170,WHITE,BLACK,"TIM3 更新定时  200ms",16,0);//居中显示	
+	else
+		Gui_StrCenter(0,170,WHITE,BLACK,"TIM3 更新定时     ms",16,0);//居中显示	
+}
+
 void TIM1_UP_IRQHandler(void)
 {
 	if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET)  /*判断是否是更新中断*/
 	{
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);       /*清除中断标志*/
 		TP1++;
-		if (TP1&1) 			GPIO_ResetBits(GPIOD,GPIO_Pin_2);   /*  PD2=0（LED1亮）*/
-		else 						GPIO_SetBits(GPIOD,GPIO_Pin_2); 		/*  PD2=1（LED1灭）*/
+		if (TP1&1) 			{
+			GPIO_ResetBits(GPIOD,GPIO_Pin_2);   /*  PD2=0（LED1亮）*/
+			LCD1(1);
+		}
+		else 						{
+			GPIO_SetBits(GPIOD,GPIO_Pin_2); 		/*  PD2=1（LED1灭）*/
+			LCD1(0);
+		}
 	}
 }
 void TIM2_IRQHandler(void)
@@ -154,8 +184,14 @@ void TIM2_IRQHandler(void)
 	{
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update); 			/*清除中断标志*/
 		TP2++;
-		if (TP2&1) 			GPIO_ResetBits(GPIOD,GPIO_Pin_3);   /*  PD3=0（LED2亮）*/
-		else 						GPIO_SetBits(GPIOD,GPIO_Pin_3); 		/*  PD3=1（LED2灭）*/
+		if (TP2&1) 			{
+			GPIO_ResetBits(GPIOD,GPIO_Pin_3);   /*  PD3=0（LED2亮）*/
+			LCD2(1);
+		}
+		else 						{
+			GPIO_SetBits(GPIOD,GPIO_Pin_3); 		/*  PD3=1（LED2灭）*/
+			LCD2(0);
+		}
 	}
 }
 void TIM3_IRQHandler(void)
@@ -164,8 +200,14 @@ void TIM3_IRQHandler(void)
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);       /*清除中断标志*/
 		TP3++;
-		if (TP3&1) 			GPIO_ResetBits(GPIOD,GPIO_Pin_4);   /*  PD4=0（LED3亮）*/
-		else 						GPIO_SetBits(GPIOD,GPIO_Pin_4); 		/*  PD4=1（LED3灭）*/
+		if (TP3&1) 			{
+			GPIO_ResetBits(GPIOD,GPIO_Pin_4);   /*  PD4=0（LED3亮）*/
+			LCD3(1);
+		}
+		else 						{
+			GPIO_SetBits(GPIOD,GPIO_Pin_4); 		/*  PD4=1（LED3灭）*/
+			LCD3(0);
+		}
 	}
 }
 

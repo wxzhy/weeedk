@@ -1173,7 +1173,8 @@ void Welcome(void)
 	else					Show_Str(10,65,GREEN,BLACK,"嵌入式系统实验开发板",24,1);
 //Gui_StrCenter(0,46,RED,BLUE,"嵌入式系统原理及应用配套实验板",16,1);//居中显示
 	Gui_StrCenter(0,100,YELLOW,BLACK,"TIM4-PWM输出实验测试程序",16,0);//居中显示	
-	Gui_StrCenter(0,130,WHITE,BLACK,"TIM4-CH3 PWM输出频率:10KHz",16,0);//居中显示	
+	//Gui_StrCenter(0,130,WHITE,BLACK,"TIM4-CH3 PWM输出频率:10KHz",16,0);//居中显示	
+	Gui_StrCenter(0,130,WHITE,BLACK,"TIM4-CH3 PWM输出频率:1KHz",16,0);//居中显示	
 	Gui_StrCenter(0,150,WHITE,BLACK,"按KEY1增加,KEY2减小占空比",16,0);//居中显示	
 	Gui_StrCenter(0,170,WHITE,BLACK,"计数脉冲个数为:",16,0);//居中显示	
 	Gui_StrCenter(0,210,WHITE,BLACK,"PWM占空比(%)为:",16,0);//居中显示	
@@ -1336,6 +1337,10 @@ void Pic_test(void)
 }
 
 
+void name_display(void)
+{
+	Gui_StrCenter(0,lcddev.height-36,YELLOW,BLUE,"162210426 朱浩瑜",16,1);//????
+}
 
 
 

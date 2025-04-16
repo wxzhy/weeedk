@@ -1173,10 +1173,10 @@ void Welcome(void)
 	else					Show_Str(10,65,GREEN,BLACK,"嵌入式系统实验开发板",24,1);
 //Gui_StrCenter(0,46,RED,BLUE,"嵌入式系统原理及应用配套实验板",16,1);//居中显示
 	Gui_StrCenter(0,100,YELLOW,BLACK,"TIMx比较定时实验测试程序",16,0);//居中显示	
-	Gui_StrCenter(0,130,WHITE,BLACK,"TIM3比较定时1 1000ms",16,0);//居中显示	
-	Gui_StrCenter(0,150,WHITE,BLACK,"TIM3比较定时2  500ms",16,0);//居中显示	
-	Gui_StrCenter(0,170,WHITE,BLACK,"TIM3比较定时3  200ms",16,0);//居中显示	
-	Gui_StrCenter(0,190,WHITE,BLACK,"TIM3比较定时4  100ms",16,0);//居中显示	
+	Gui_StrCenter(0,130,WHITE,BLACK,"TIM3比较定时1 100ms",16,0);//居中显示	
+	Gui_StrCenter(0,150,WHITE,BLACK,"TIM3比较定时2  50ms",16,0);//居中显示	
+	Gui_StrCenter(0,170,WHITE,BLACK,"TIM3比较定时3  20ms",16,0);//居中显示	
+	Gui_StrCenter(0,190,WHITE,BLACK,"TIM3比较定时4  10ms",16,0);//居中显示	
 	//Gui_StrCenter(0,190,YELLOW,BLACK,"TIMx更新定时定时时间:",16,0);//居中显示
 }
 
@@ -1333,6 +1333,13 @@ void Pic_test(void)
 	Show_Str(picx0+60*4+12,picy0+70+45,BLUE,YELLOW,"QQ10",16,1);
 	
 }
+
+
+void name_display(void)
+{
+	Gui_StrCenter(0,lcddev.height-36,YELLOW,BLUE,"162210426 朱浩瑜",16,1);//????
+}
+
 
 
 

@@ -1334,6 +1334,12 @@ void Pic_test(void)
 }
 
 
+void name_display(void)
+{
+	Gui_StrCenter(0,lcddev.height-36,YELLOW,BLUE,"162210426 ÷Ï∫∆Ë§",16,1);//????
+}
+
+
 
 
 

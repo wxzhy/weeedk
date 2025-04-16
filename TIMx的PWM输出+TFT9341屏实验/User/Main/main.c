@@ -36,6 +36,7 @@ int main(void)
 	LCD_Init();													/*  LCD初始化        */
 	Welcome(); 										 			/*  显示主界面       */
 	LED1(1);LED2(1);LED3(1);LED4(1);
+	 name_display();
 	while(1)
 	{		
  		if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_11)==0)   //KEY1按下
