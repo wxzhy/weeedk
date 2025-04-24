@@ -137,43 +137,61 @@ void SysTick_Handler(void)
 {
 }
 
-void TIM2_IRQHandler(void)
+void TIM3_IRQHandler(void) // 修改为TIM3_IRQHandler
 {
-	if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
+	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) // 修改为TIM3
 	{
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+		TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // 修改为TIM3
 		TFlag=1;
-	
 	}
 }
 
 /***************************************************
-*函数名称：void USART3_IRQHandler(void)
+*函数名称：void USART1_IRQHandler(void)
 *
 *入口参数：无
 *
 *出口参数：无
 *
-*功能说明：USART3接收中断
+*功能说明：USART1接收中断
 *****************************************************/
 extern uint8_t BeepFlag;
 extern 	uint8_t res;				
-  void USART3_IRQHandler(void)
+void USART1_IRQHandler(void) // 修改为USART1_IRQHandler
 {
-	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) // 修改为USART1
 	{
-   USART_ClearFlag(USART3, USART_IT_RXNE);		
-	  res =USART_ReceiveData(USART3);		       // 读取接收到的数据USART3->DR
+   USART_ClearFlag(USART1, USART_IT_RXNE); // 修改为USART1
+	  res = USART_ReceiveData(USART1); // 修改为USART1
 		switch(res)
 		{
-/******自行修改处理代码**********/			
-			case '1':USART3_SendString("\r\n Turn on LED1.");
-			break;
-			case '2':USART3_SendString("\r\n Turn on LED2.");
-			break;
+			case 'R': // 红色亮，绿色灭
+				GPIO_SetBits(GPIOB, GPIO_Pin_1); // 红色亮
+				GPIO_ResetBits(GPIOB, GPIO_Pin_2); // 绿色灭
+				USART_SendString(USART1, (uint8_t *)"Turn On Red LED.\r\n");
+				break;
+				
+			case 'G': // 绿色亮，红色灭
+				GPIO_ResetBits(GPIOB, GPIO_Pin_1); // 红色灭
+				GPIO_SetBits(GPIOB, GPIO_Pin_2); // 绿色亮
+				USART_SendString(USART1, (uint8_t *)"Turn On Green LED.\r\n");
+				break;
+				
+			case 'S': // 全灭
+				GPIO_ResetBits(GPIOB, GPIO_Pin_1); // 红色灭
+				GPIO_ResetBits(GPIOB, GPIO_Pin_2); // 绿色灭
+				USART_SendString(USART1, (uint8_t *)"Turn off Red and Green LED.\r\n");
+				break;
+				
+			case 'D': // 全亮
+				GPIO_SetBits(GPIOB, GPIO_Pin_1); // 红色亮
+				GPIO_SetBits(GPIOB, GPIO_Pin_2); // 绿色亮
+				USART_SendString(USART1, (uint8_t *)"Turn On Red and Green LED.\r\n");
+				break;
 		}
 	}  	
 }
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

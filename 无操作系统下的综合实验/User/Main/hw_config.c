@@ -60,20 +60,18 @@ void TIM_Configuration(u16 nms)
 {
 
 	TIM_TimeBaseInitTypeDef	TIM_TimeBaseStructure;
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 ,ENABLE);
-	TIM_DeInit(TIM2);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE); // 修改为TIM3
+	TIM_DeInit(TIM3); // 修改为TIM3
 	TIM_TimeBaseStructure.TIM_Period = 10*nms;         //ms数
 	TIM_TimeBaseStructure.TIM_Prescaler = SystemCoreClock/10000-1;       
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //向上计数模式
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); // 修改为TIM3
 	
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); // 修改为TIM3
 		
-	TIM_Cmd(TIM2, ENABLE);	   //使能TIM2
+	TIM_Cmd(TIM3, ENABLE);	   //使能TIM3
 }
-
-
 
 /*********************************************
 *函数名称：void NVIC_Configuration(void)
@@ -89,12 +87,13 @@ void NVIC_Configuration(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
-	NVIC_InitStructure.NVIC_IRQChannel =TIM2_IRQn; 		  //TIM2中断
+	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn; // 修改为TIM3
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; //先占优先级0
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;		  //次占优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
 	NVIC_Init(&NVIC_InitStructure);
-	NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn; 		  //USART3接收中断
+	
+	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn; // 修改为USART1
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1; //先占优先级1
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5;		  //次占优先级5
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
@@ -131,9 +130,10 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;//PA3  AIN3 模拟输入引脚定义
+	// 修改为PC2作为模拟输入
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;// PC2作为ADC1_IN12模拟输入引脚定义
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;	
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	
 	GPIO_InitStructure.GPIO_Pin = BEEP_PIN |GPIO_Pin_4|GPIO_Pin_15; //PC4/PC15控制继电器
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;	
@@ -151,6 +151,7 @@ void GPIO_Configuration(void)
 	LED5(1);
 
 }
+
 /***********************************************************
 *函数名称：void ADC_Configuration(void)
 *
@@ -158,10 +159,10 @@ void GPIO_Configuration(void)
 *
 *出口参数：无
 *
-*功能说明：ADC1初始化配置，PA3为ADC1_AIN3 */
+*功能说明：ADC1初始化配置，PC2为ADC1_AIN12 */
 
 /*配置ADC1的工作模式为DMA模式  */
- void ADC_Configuration(void)
+void ADC_Configuration(void)
 {
   DMA_InitTypeDef DMA_InitStructure;
   ADC_InitTypeDef ADC_InitStructure;	
@@ -195,8 +196,8 @@ void GPIO_Configuration(void)
   ADC_InitStructure.ADC_NbrOfChannel = 1;  // 1个通道转换通道
   ADC_Init(ADC1, &ADC_InitStructure);
 
-  /* ADC1 regular channel11 configuration */ 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_55Cycles5); //通道3（电位器）采样周期55.5个时钟周期
+  /* ADC1 regular channel12 configuration - 修改为通道12 */ 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 1, ADC_SampleTime_55Cycles5); //通道12（电位器）采样周期55.5个时钟周期
 
   /* Enable ADC1 DMA */
   ADC_DMACmd(ADC1, ENABLE);	 //使能ADC的DMA
@@ -204,7 +205,7 @@ void GPIO_Configuration(void)
   /* Enable ADC1 */
   ADC_Cmd(ADC1, ENABLE); //使能ADC1
 
-	ADC_TempSensorVrefintCmd(ENABLE);			 					 /*使能温度传感器和内部参考电压通道*/	
+  ADC_TempSensorVrefintCmd(ENABLE);			 					 /*使能温度传感器和内部参考电压通道*/	
 
   /* Enable ADC1 reset calibaration register */   
   ADC_ResetCalibration(ADC1);
@@ -239,7 +240,7 @@ int ReadADCAverageValue()  //求平均值
 	*
 	*出口参数：无
 	*
-	*功能说明：USART3初始化配置 包括GPIO初始化 TX必须配置为复用输出
+	*功能说明：USART1初始化配置 包括GPIO初始化 TX必须配置为复用输出
 *********************************************************************************/
 void USART_Configuration(void)
 {
@@ -264,41 +265,17 @@ void USART_Configuration(void)
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	/*USART2端口配置
-	  PD5 TX 复用推挽输出 PD6 RX 浮空输入模式*/
-	GPIO_PinRemapConfig(GPIO_Remap_USART2, ENABLE);	  //如果使用PA2、PA3不需要重新映射
-
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5 ;
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOD, &GPIO_InitStructure); 
-	
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_6 ;
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-    /*USART3端口配置
-	  PB10 TX 复用推挽输出 PB11 RX 浮空输入模式*/
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10 ;
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure); 
-	
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_11 ;
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-  /*--------------USART3 配置-------------------*/
-	USART_InitStructure.USART_BaudRate = 115200;
+  /*--------------USART1 配置-------------------*/
+	USART_InitStructure.USART_BaudRate = 57600; // 修改为57600
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	USART_Init(USART3, &USART_InitStructure);
-	USART_Cmd(USART3, ENABLE);
+	USART_Init(USART1, &USART_InitStructure); // 修改为USART1
+	USART_Cmd(USART1, ENABLE); // 修改为USART1
 
-  USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);		
+  USART_ITConfig(USART1, USART_IT_RXNE, ENABLE); // 修改为USART1	
 }
 /*********************************************
 *函数名称：void USART1_SendString(uint8_t *ch)
