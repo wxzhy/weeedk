@@ -33,7 +33,7 @@ u8 key;
 
 
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-
+	
 /* Private functions ---------------------------------------------------------*/
 /**									 _
 	*名称：void Delay(void)
@@ -60,7 +60,7 @@ uint8_t KEY=0;
 	LCD_Init();					//LCD初始化
 	USART_Configuration(U1Baud);
 
-   USART1_SendString("\r\n UART1通信实验");
+   printf("\r\n UART1通信实验");
 
 	NVIC_Configuration();		
 	Welcome(); 		//显示主界面
@@ -72,31 +72,44 @@ uint8_t KEY=0;
 	{
 		switch(res)
 		{
-			case '1':USART1_SendString("\r\n Turn on LED1.");
+			case '1':printf("\r\n Turn on LED1.");
 				LED1(0);LED2(1);LED3(1);
 				Gui_StrCenter(0,230,WHITE,BLACK,"   Turn on LED1!    ",16,0);//居中显示
 				ReceiveFlag=1;
 				break;
-			case '2':USART1_SendString("\r\n Turn on LED2.");
+			case '2':printf("\r\n Turn on LED2.");
 				LED1(1);LED2(0);LED3(1);
 				Gui_StrCenter(0,230,WHITE,BLACK,"   Turn on LED2!    ",16,0);//居中显示
 				ReceiveFlag=1;
 				break;
-			case '3':USART1_SendString("\r\n Turn on LED3.");
+			case '3':printf("\r\n Turn on LED3.");
 				LED1(1);LED2(1);LED3(0);
 				Gui_StrCenter(0,230,WHITE,BLACK,"   Turn on LED3!    ",16,0);//居中显示
 				ReceiveFlag=1;
 				break;
-			case '5':USART1_SendString("\r\n Turn on all LED.");
+			case '5':printf("\r\n Turn on all LED.");
 				LED1(0);LED2(0);LED3(0);
 				Gui_StrCenter(0,230,WHITE,BLACK,"   Turn on LED1~LED3!    ",16,0);//居中显示
 				ReceiveFlag=1;
 				break;
 			case '0':
-			case '6':USART1_SendString("\r\n Turn off all LED. ");
+			case '6':printf("\r\n Turn off all LED. ");
 				ReceiveFlag=1;
 				LED1(1);LED2(1);LED3(1);
 				Gui_StrCenter(0,230,WHITE,BLACK,"Turn off LED1~LED3!",16,0);//居中显示
+				break;
+			
+			case 'M':
+			case 'm':printf("\r\n Motor running. ");
+				ReceiveFlag=1;
+				IA(1);IB(0);
+				Gui_StrCenter(0,230,WHITE,BLACK,"Motor running!",16,0);//居中显示
+				break;
+			case 'S':
+			case 's':printf("\r\n Motor stopped. ");
+				ReceiveFlag=1;
+				IA(0);IB(0);
+				Gui_StrCenter(0,230,WHITE,BLACK,"Motor stopped!",16,0);//居中显示
 				break;
 	default:
 				ReceiveFlag=1;
@@ -118,23 +131,23 @@ uint8_t KEY=0;
 	switch(KEY)
 		{
 		case 1:/*KEY1键，发送i*/
-			USART1_SendString("\r\n UART1通信实验:你按下了KEY1键！");
+			printf("\r\n UART1通信实验:你按下了KEY1键！");
 			Show_Str(50,230,WHITE,BLACK,"你按下了KEY1键！",16,0);//居中显示
 		
 			KEY=0;
 			break;
 		case 2:/*KEY2键，发送字符串*/
-			USART1_SendString("\r\n UART1通信实验:你按下了KEY2键！");
+			printf("\r\n UART1通信实验:你按下了KEY2键！");
 			Show_Str(50,230,WHITE,BLACK,"你按下了KEY2键！",16,0);//居中显示
 			KEY=0;
 			break;
 		case 3:/*KEY3键，发送字符串*/
-			USART1_SendString("\r\n UART1通信实验:你按下了KEY3键！");
+			printf("\r\n UART1通信实验:你按下了KEY3键！");
 			Show_Str(50,230,WHITE,BLACK,"你按下了KEY3键！",16,0);//居中显示
 			KEY=0;
 			break;
 		case 4:/*KEY3键，发送字符串*/
-			USART1_SendString("\r\n UART1通信实验:你按下了KEY4键！");
+			printf("\r\n UART1通信实验:你按下了KEY4键！");
 			Show_Str(50,230,WHITE,BLACK,"你按下了KEY4键！",16,0);//居中显示
 			KEY=0;
 			break;

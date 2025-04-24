@@ -3,7 +3,8 @@
 *********************************************************************************/ 
 
 #include "hw_config.h"
-#define SampleNum 40			/*每个通道采样40次*/
+//#define SampleNum 40			/*每个通道采样40次*/
+#define SampleNum 50			/*每个通道采样50次*/
 #define ChannelNum 5			/*共5个通道:0＝chan3,1=chan6,2=chan7,3=chan16,4-chan17   */
 #define ADC_DR_Address    ((u32)0x4001244C)  /*0x4001244C为ADC_DR的地址（规则数据寄存器地址）*/
 u16 ADC_ConvertedValue[SampleNum][ChannelNum];  /*ADC转换结果存放变量（地址）*/

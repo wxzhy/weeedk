@@ -87,6 +87,7 @@ uint8_t Idx,i;
 		DAC_Configuration();
 		LCD_Init();																	/*  LCD初始化    */
 		Welcome(); 										 							/*  显示主界面   */
+		name_display();
 		LED1(1);LED2(1);LED3(1);LED4(1);
 		for (Idx = 0; Idx < 32; Idx++)
 		{
@@ -138,7 +139,8 @@ uint8_t Idx,i;
 		if (GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_12)==0) {KEY=2;TIM_Cmd(TIM3, DISABLE);LED1(1);break;}		
 		TIM_Configuration(Redfrebit[i]);	   								//TIM2赋值改变频率，发不同音调
 		GPIOD->ODR^=(1<<2);
-		Delay_ms(300);
+		//Delay_ms(300);
+		Delay_ms(500);
 		LED2(1);
 			}
 			break;	
@@ -159,7 +161,7 @@ uint8_t Idx,i;
 			}
 		case 4:
 			{
-		for (i=0;i<4;i++)
+		for (i=0;i<58;i++)
 			{
 		if (GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_12)==0) {KEY=2;TIM_Cmd(TIM3, DISABLE);LED1(1);break;}		
 		TIM_Configuration(my[i]);	   								//TIM2赋值改变频率，发不同音调

@@ -1174,7 +1174,8 @@ void Welcome(void)
 //Gui_StrCenter(0,46,RED,BLUE,"嵌入式系统原理及应用配套实验板",16,1);//居中显示
 	Gui_StrCenter(0,100,YELLOW,BLACK,"ADC应用-电位器实验测试程序",16,0);//居中显示	
 	Gui_StrCenter(0,130,YELLOW,BLACK,"电位器(通道3)变换的结果为",16,0);//居中显示
-	Gui_StrCenter(0,170,YELLOW,BLACK,"对应的模拟电压值为(mV)",16,0);//居中显示
+//	Gui_StrCenter(0,170,YELLOW,BLACK,"对应的模拟电压值为(mV)",16,0);//居中显示
+	Gui_StrCenter(0,170,YELLOW,BLACK,"当前压力值为(kpa)",16,0);//居中显示
 	POINT_COLOR = YELLOW;
 	BACK_COLOR=RED;
 }
@@ -1333,6 +1334,11 @@ void Pic_test(void)
 	
 }
 
+
+void name_display(void)
+{
+	Gui_StrCenter(0,lcddev.height-36,YELLOW,BLUE,"162210426 朱浩瑜",16,1);
+}
 
 
 

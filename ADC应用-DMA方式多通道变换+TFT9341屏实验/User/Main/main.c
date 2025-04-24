@@ -36,6 +36,7 @@ int main(void)
 		ADC1_Mode_Config ();		        						/*ADC1使用DMA方式多通道连续变换初始化设置*/
 		LCD_Init();																	/*  LCD初始化    */
 		Welcome(); 										 							/*  显示主界面   */
+		name_display();
 		LED1(1);LED2(1);LED3(1);LED4(1);
 	while(1)
 	{		

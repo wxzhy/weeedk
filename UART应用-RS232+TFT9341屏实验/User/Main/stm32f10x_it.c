@@ -155,6 +155,7 @@ char res;
 	{
    USART_ClearFlag(USART1, USART_IT_RXNE);		
 	  res =USART_ReceiveData(USART1);		       // 读取接收到的数据USART1->DR
+		ReceiveFlag=1;
 	  USART1_SendString("\r\n 接收到的字符是");
 		while(!USART_GetFlagStatus(USART1, USART_FLAG_TXE));
 		USART_SendData(USART1, res);
