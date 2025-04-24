@@ -168,25 +168,25 @@ void USART1_IRQHandler(void) // 修改为USART1_IRQHandler
 			case 'R': // 红色亮，绿色灭
 				GPIO_SetBits(GPIOB, GPIO_Pin_1); // 红色亮
 				GPIO_ResetBits(GPIOB, GPIO_Pin_2); // 绿色灭
-				USART_SendString(USART1, (uint8_t *)"Turn On Red LED.\r\n");
+				USART1_SendString("\r\nTurn On Red LED.");
 				break;
 				
 			case 'G': // 绿色亮，红色灭
 				GPIO_ResetBits(GPIOB, GPIO_Pin_1); // 红色灭
 				GPIO_SetBits(GPIOB, GPIO_Pin_2); // 绿色亮
-				USART_SendString(USART1, (uint8_t *)"Turn On Green LED.\r\n");
+				USART1_SendString(("\r\nTurn On Green LED.");
 				break;
 				
 			case 'S': // 全灭
 				GPIO_ResetBits(GPIOB, GPIO_Pin_1); // 红色灭
 				GPIO_ResetBits(GPIOB, GPIO_Pin_2); // 绿色灭
-				USART_SendString(USART1, (uint8_t *)"Turn off Red and Green LED.\r\n");
+				USART1_SendString("\r\nTurn off Red and Green LED.");
 				break;
 				
 			case 'D': // 全亮
 				GPIO_SetBits(GPIOB, GPIO_Pin_1); // 红色亮
 				GPIO_SetBits(GPIOB, GPIO_Pin_2); // 绿色亮
-				USART_SendString(USART1, (uint8_t *)"Turn On Red and Green LED.\r\n");
+				USART1_SendString("\r\nTurn On Red and Green LED.");
 				break;
 		}
 	}  	

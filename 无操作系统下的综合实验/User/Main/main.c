@@ -31,10 +31,13 @@ u8 res;
 u16 value;   								/*采样处理后的数字量*/			
 float ADC_Value=0.00;       /*实际物理量值*/                  
 u8 TFlag=0;
-u8 flashFlag=0; // 添加闪烁标志
 u16 Pulse=0;    // 添加PWM脉冲变量
 int main(void)
 {
+	u8 led_count = 0;
+	u8 name_blink = 0;
+
+
 	Delay_Init();               /*系统滴答定时器SysTick初始化*/
   TIM_Configuration(5000);		/*定时器初始化，定时5000ms允许中断，已改为TIM3*/
 	GPIO_Configuration();
@@ -60,65 +63,70 @@ while(1)
 			TFlag=0;
 			LCD_ShowNum(130,240,ADC_Value,4,16);
 		}
-		
-		// 按键处理部分
-		// KEY1按下点亮LED1，抬起灭
-		if(!KEY1()) {
-			LED1(0); // 点亮LED1
-		} else {
-			LED1(1); // 熄灭LED1
-		}
-		
-		// KEY2按下蜂鸣器响一声
-		if(!KEY2()) {
-			BEEP(1); // 蜂鸣器响
-			Delay_ms(100);
-			BEEP(0); // 蜂鸣器停
-			while(!KEY2()); // 等待按键释放
-		}
-		
-		// KEY3按下，姓名学号闪烁，LED1-LED4跑马灯
-		if(!KEY3()) {
-			flashFlag = 1; // 设置闪烁标志
-			while(!KEY3()); // 等待按键释放
-		}
-		
-		// KEY4按下恢复正常显示
-		if(!KEY4()) {
-			flashFlag = 0; // 清除闪烁标志
-			LED1(1); // 熄灭所有LED
-			LED2(1);
-			LED3(1);
-			LED4(1);
-			while(!KEY4()); // 等待按键释放
-		}
-		
-		// 如果闪烁标志设置，实现跑马灯效果
-		if(flashFlag) {
-			static u8 ledIndex = 0;
-			static u8 displayFlag = 0;
+		// 如果姓名学号需要闪烁
+		if(name_blink)
+		{
+			if(led_count % 2 == 0)
+			{
+				Show_Str(45,40,RED,YELLOW,"学号:162210426",16,0);
+				Show_Str(45,60,RED,YELLOW,"姓名:朱浩瑜",16,0); // 显示姓名学号
+			}
+			else
+			{
+				Show_Str(45,40,RED,YELLOW,"学号:         ",16,0);
+				Show_Str(45,60,RED,YELLOW,"姓名:      ",16,0); // 清屏
+			}
 			
 			// 跑马灯效果
-			LED1(1); LED2(1); LED3(1); LED4(1); // 全灭
-			switch(ledIndex) {
-				case 0: LED1(0); break; // LED1亮
-				case 1: LED2(0); break; // LED2亮
-				case 2: LED3(0); break; // LED3亮
-				case 3: LED4(0); break; // LED4亮
+			switch(led_count % 4)
+			{
+				case 0: LED1(0); LED2(1); LED3(1); LED4(1); break;
+				case 1: LED1(1); LED2(0); LED3(1); LED4(1); break;
+				case 2: LED1(1); LED2(1); LED3(0); LED4(1); break;
+				case 3: LED1(1); LED2(1); LED3(1); LED4(0); break;
 			}
-			ledIndex = (ledIndex + 1) % 4;
 			
-			// 姓名学号闪烁
-			if(displayFlag) {
-				Show_Str(45,40,RED,YELLOW,"学号:162210426",16,0);
-				Show_Str(45,60,RED,YELLOW,"姓名:朱浩瑜",16,0);
-			} else {
-				Show_Str(45,40,RED,YELLOW,"学号:         ",16,0);
-				Show_Str(45,60,RED,YELLOW,"姓名:   ",16,0);
-			}
-			displayFlag = !displayFlag;
-			
-			Delay_ms(300); // 闪烁间隔
+			led_count++;
+		}
+					
+
+		// 按键处理部分
+		// KEY1: 按下点亮LED1，抬起LED1灭
+		if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_11) == 0) // 按下KEY1
+		{
+			LED1(0); // LED1亮
+		}
+		else
+		{
+			if(!name_blink) // 如果不闪烁，LED1灭
+				LED1(1); // LED1灭
+		}
+		
+		// KEY2: 按下蜂鸣器响一声
+		if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_12) == 0) // 按下KEY2
+		{
+			BEEP(1); // 蜂鸣器响
+			Delay_ms(100);
+			BEEP(0);
+			Delay_ms(200); // 防止连续触发
+		}
+		
+		// KEY3: 姓名学号闪烁和LED跑马灯
+		if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13) == 0) // 按下KEY3
+		{
+			name_blink = 1; // 启动闪烁
+			Delay_ms(200); // 防止连续触发
+		}
+		
+		// KEY4: 恢复显示
+		if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == 0) // 按下KEY4
+		{
+			name_blink = 0; // 停止闪烁
+			led_count = 0;
+			LED1(1); LED2(1); LED3(1); LED4(1); // 所有LED灭
+			Show_Str(45,40,RED,YELLOW,"学号:162210426",16,0);
+			Show_Str(45,60,RED,YELLOW,"姓名:朱浩瑜",16,0); // 重新显示姓名学号
+			Delay_ms(200); // 防止连续触发
 		}
 	}
 }
