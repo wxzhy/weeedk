@@ -147,6 +147,16 @@ void TIM2_IRQHandler(void)
 	}
 }
 
+void TIM3_IRQHandler(void)
+{
+	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
+	{
+		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+		TFlag=1;
+	
+	}
+}
+
 /***************************************************
 *函数名称：void USART3_IRQHandler(void)
 *
@@ -158,7 +168,7 @@ void TIM2_IRQHandler(void)
 *****************************************************/
 extern uint8_t BeepFlag;
 extern 	uint8_t res;				
-  void USART3_IRQHandler(void)
+void USART3_IRQHandler(void)
 {
 	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
 	{
@@ -171,6 +181,38 @@ extern 	uint8_t res;
 			break;
 			case '2':USART3_SendString("\r\n Turn on LED2.");
 			break;
+		}
+	}  	
+}
+
+void USART1_IRQHandler(void)
+{
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
+	{
+		USART_ClearFlag(USART1, USART_IT_RXNE);		
+		res = USART_ReceiveData(USART1);		       // 读取接收到的数据USART1->DR
+		switch(res)
+		{
+			case 'R':
+				GPIO_SetBits(GPIOB, GPIO_Pin_1);     // LED7红色亮
+				GPIO_ResetBits(GPIOB, GPIO_Pin_2);   // LED7绿色灭
+				USART1_SendString("\r\nTurn On Red LED.");
+				break;
+			case 'G':
+				GPIO_ResetBits(GPIOB, GPIO_Pin_1);   // LED7红色灭
+				GPIO_SetBits(GPIOB, GPIO_Pin_2);     // LED7绿色亮
+				USART1_SendString("\r\nTurn On Green LED.");
+				break;
+			case 'S':
+				GPIO_ResetBits(GPIOB, GPIO_Pin_1);   // LED7红色灭
+				GPIO_ResetBits(GPIOB, GPIO_Pin_2);   // LED7绿色灭
+				USART1_SendString("\r\nTurn off Red and Green LED.");
+				break;
+			case 'D':
+				GPIO_SetBits(GPIOB, GPIO_Pin_1);     // LED7红色亮
+				GPIO_SetBits(GPIOB, GPIO_Pin_2);     // LED7绿色亮
+				USART1_SendString("\r\nTurn On Red and Green LED.");
+				break;
 		}
 	}  	
 }

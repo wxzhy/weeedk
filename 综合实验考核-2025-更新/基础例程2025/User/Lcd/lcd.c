@@ -1203,8 +1203,8 @@ void DisplayInf(void)
 {	
 	DrawTestPage("嵌入式系统原理及应用考核实验");
 	
-	Show_Str(45,40,RED,YELLOW,"学号:XXXXXXXXX",16,0);//居中显示自己的学号
-	Show_Str(45,60,RED,YELLOW,"姓名:XXX",16,0);//居中显示自己的汉字姓名
+	Show_Str(45,40,RED,YELLOW,"学号:162210426",16,0);//居中显示自己的学号
+	Show_Str(45,60,RED,YELLOW,"姓名:朱浩瑜",16,0);//居中显示自己的汉字姓名
 	Show_Str(10,100,WHITE,BLACK,"综合考核实验主要内容:",16,0);//居中显示
 	Show_Str(10,120,WHITE,BLACK,"1.请填写自己的学号和姓名",16,0);//居中显示
 	Show_Str(10,140,WHITE,BLACK,"2.TIM应用:定时500ms",16,0);//居中显示
@@ -1216,12 +1216,15 @@ void DisplayInf(void)
 
 	Show_Str(200,240,WHITE,BLACK,"mV",16,0);	
 
+	Show_Str(20,270,WHITE,BLACK,"PWM占空比",16,0);	
+	Show_Str(200,270,WHITE,BLACK,"%",16,0);	
+
 POINT_COLOR =YELLOW;BACK_COLOR =RED; 
-	LCD_DrawRectangle(0,230,240,265);
+	LCD_DrawRectangle(0,230,240,295);
 	POINT_COLOR =RED;
-	LCD_DrawRectangle(1,231,238,264);
+	LCD_DrawRectangle(1,231,238,294);
 	POINT_COLOR =YELLOW;
-	LCD_DrawRectangle(2,232,237,263);
+	LCD_DrawRectangle(2,232,237,293);
 	
 	POINT_COLOR = YELLOW;
 	LCD_DrawLine(0,230,240,230);

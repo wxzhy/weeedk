@@ -52,7 +52,7 @@ void PWM_GPIO_Init(void)
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO,ENABLE);	
 																								//使能各个端口时钟
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8| GPIO_Pin_9; //PB8和PB9引脚，PB6、PB7、PB8和PB9分别为TIM4对应的CH1、CH2、CH3和CH4四个通道的PWM输出引脚，这里使用PB8和PB9
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6| GPIO_Pin_9; //PB6和PB9引脚，PB6、PB7、PB8和PB9分别为TIM4对应的CH1、CH2、CH3和CH4四个通道的PWM输出引脚，这里使用PB6和PB9
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	   	  //复用输出推挽
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	   	//配置端口速度为50M
 	GPIO_Init(GPIOB, &GPIO_InitStructure);				   			//将端口GPIOD进行初始化配置
@@ -80,11 +80,11 @@ void Init_PWM(uint16_t Dutyfactor)
 																    
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;    	//使能输出状态  需要PWM输出才需要这行代码
 														
-  TIM_OC3Init(TIM4, &TIM_OCInitStructure);				//根据参数初始化PWM寄存器 通道3（PB8）   
+    TIM_OC1Init(TIM4, &TIM_OCInitStructure);				//根据参数初始化PWM寄存器 通道1（PB6）   
 
-	TIM_OC3PreloadConfig(TIM4,TIM_OCPreload_Enable);//使能 TIMx在 CCR3 上的预装载寄存器
+	TIM_OC1PreloadConfig(TIM4,TIM_OCPreload_Enable);//使能 TIMx在 CCR1 上的预装载寄存器
 
-  TIM_CtrlPWMOutputs(TIM4,ENABLE);  							//设置TIM4 的PWM 输出为使能  
+    TIM_CtrlPWMOutputs(TIM4,ENABLE);  							//设置TIM4 的PWM 输出为使能  
 }
 /**********************************************
 *函数名称：void TIMER_Configuration(void)
@@ -99,17 +99,17 @@ void TIM_Configuration(u16 nms)
 {
 
 	TIM_TimeBaseInitTypeDef	TIM_TimeBaseStructure;
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2|RCC_APB1Periph_TIM4 ,ENABLE);
-	TIM_DeInit(TIM2);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3|RCC_APB1Periph_TIM4 ,ENABLE);
+	TIM_DeInit(TIM3);
 	TIM_TimeBaseStructure.TIM_Period = 10*nms;         //ms数
 	TIM_TimeBaseStructure.TIM_Prescaler = SystemCoreClock/10000-1;       
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //向上计数模式
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
 	
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
 		
-	TIM_Cmd(TIM2, ENABLE);	   //使能TIM2
+	TIM_Cmd(TIM3, ENABLE);	   //使能TIM3
 	
 	TIM_DeInit(TIM4);                              				//将IM2定时器初始化位复位值
 	TIM_InternalClockConfig(TIM4); 												//配置 TIM4 内部时	   
@@ -146,12 +146,13 @@ void NVIC_Configuration(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
-	NVIC_InitStructure.NVIC_IRQChannel =TIM2_IRQn; 		  //TIM2中断
+	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn; 		  //TIM3中断
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; //先占优先级0
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;		  //次占优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
 	NVIC_Init(&NVIC_InitStructure);
-	NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn; 		  //USART3接收中断
+	
+	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn; 		  //USART1接收中断
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1; //先占优先级1
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5;		  //次占优先级5
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
@@ -188,9 +189,9 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;//PA3  AIN3 模拟输入引脚定义
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;//PC3  AIN13 模拟输入引脚定义
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;	
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	
 	GPIO_InitStructure.GPIO_Pin = BEEP_PIN |GPIO_Pin_4|GPIO_Pin_15; //PC4/PC15控制继电器
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;	
@@ -215,7 +216,7 @@ void GPIO_Configuration(void)
 *
 *出口参数：无
 *
-*功能说明：ADC1初始化配置，PA3为ADC1_AIN3 */
+*功能说明：ADC1初始化配置，PC3为ADC1_AIN13 */
 
 /*配置ADC1的工作模式为DMA模式  */
  void ADC_Configuration(void)
@@ -252,8 +253,8 @@ void GPIO_Configuration(void)
   ADC_InitStructure.ADC_NbrOfChannel = 1;  // 1个通道转换通道
   ADC_Init(ADC1, &ADC_InitStructure);
 
-  /* ADC1 regular channel11 configuration */ 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_55Cycles5); //通道3（电位器）采样周期55.5个时钟周期
+  /* ADC1 regular channel13 configuration */ 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_55Cycles5); //通道13（电位器）采样周期55.5个时钟周期
 
   /* Enable ADC1 DMA */
   ADC_DMACmd(ADC1, ENABLE);	 //使能ADC的DMA
@@ -296,7 +297,7 @@ int ReadADCAverageValue()  //求平均值
 	*
 	*出口参数：无
 	*
-	*功能说明：USART3初始化配置 包括GPIO初始化 TX必须配置为复用输出
+	*功能说明：USART1初始化配置 包括GPIO初始化 TX必须配置为复用输出
 *********************************************************************************/
 void USART_Configuration(void)
 {
@@ -345,17 +346,17 @@ void USART_Configuration(void)
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  /*--------------USART3 配置-------------------*/
-	USART_InitStructure.USART_BaudRate = 115200;
+  /*--------------USART1 配置-------------------*/
+	USART_InitStructure.USART_BaudRate = 57600;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	USART_Init(USART3, &USART_InitStructure);
-	USART_Cmd(USART3, ENABLE);
+	USART_Init(USART1, &USART_InitStructure);
+	USART_Cmd(USART1, ENABLE);
 
-  USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);		
+  USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);		
 }
 /*********************************************
 *函数名称：void USART1_SendString(uint8_t *ch)
